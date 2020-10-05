@@ -493,12 +493,20 @@ export class AuthClass {
 						// We need to trigger currentUserPoolUser again
 						const currentUser = await this.currentUserPoolUser();
 						that.user = currentUser;
+						const currentAccessToken = (
+							await this.currentSession()
+						).getAccessToken();
 						dispatchAuthEvent(
 							'signIn',
 							currentUser,
 							`A user ${user.getUsername()} has been signed in`
 						);
 						resolve(currentUser);
+						dispatchAuthEvent(
+							'auth',
+							currentAccessToken,
+							'authentication result'
+						);
 					} catch (e) {
 						logger.error('Failed to get the signed in user', e);
 						reject(e);
